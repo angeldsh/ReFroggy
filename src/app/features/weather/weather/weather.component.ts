@@ -43,9 +43,33 @@ export class WeatherComponent implements OnDestroy {
     });
   }
 
+  touchStartX = 0;
+  touchEndX = 0;
 
   setTab(tab: 'hoy' | '14dias') {
     this.selectedTab = tab;
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.changedTouches[0].screenX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    this.touchEndX = event.changedTouches[0].screenX;
+    this.handleSwipe();
+  }
+
+  private handleSwipe() {
+    const swipeThreshold = 50;
+    const deltaX = this.touchEndX - this.touchStartX;
+
+    if (deltaX > swipeThreshold) {
+      // Deslizar hacia derecha (volver a la pestaña anterior)
+      this.setTab('hoy');
+    } else if (deltaX < -swipeThreshold) {
+      // Deslizar hacia izquierda (avanzar a la siguiente pestaña)
+      this.setTab('14dias');
+    }
   }
 
   private updateTheme(category: string, isDay: boolean) {

@@ -20,7 +20,7 @@
         
         @if (expandedDate === item.fullDate) {
           <div class="hourly-details">
-            <div class="hourly-scroll">
+            <div class="hourly-scroll" (touchstart)="$event.stopPropagation()" (touchend)="$event.stopPropagation()">
               @for (hour of item.hourly; track hour.time) {
                 <div class="hour-item">
                   <span class="time">{{ hour.time }}</span>

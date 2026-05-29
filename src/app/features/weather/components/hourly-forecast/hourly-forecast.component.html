@@ -1,6 +1,6 @@
 <div class="hourly-forecast glass-panel">
   <h3 class="section-title">Previsión por horas</h3>
-  <div class="hourly-scroll">
+  <div class="hourly-scroll" (touchstart)="$event.stopPropagation()" (touchend)="$event.stopPropagation()">
     @for (item of forecastData; track item.time) {
       <div class="hour-item">
         <span class="time">{{ item.time }}</span>

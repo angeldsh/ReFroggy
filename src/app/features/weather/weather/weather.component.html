@@ -18,7 +18,7 @@
     }
   
     @if (store.weather(); as weather) {
-      <main class="content-grid">
+      <main class="content-grid" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
         <nav class="tabs-nav glass-panel">
           <button class="tab-btn" [class.active]="selectedTab === 'hoy'" (click)="setTab('hoy')">Hoy</button>
           <button class="tab-btn" [class.active]="selectedTab === '14dias'" (click)="setTab('14dias')">14 Días</button>
