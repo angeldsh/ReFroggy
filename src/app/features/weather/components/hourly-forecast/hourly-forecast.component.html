@@ -1,0 +1,12 @@
+<div class="hourly-forecast glass-panel">
+  <h3 class="section-title">Previsión por horas</h3>
+  <div class="hourly-scroll">
+    @for (item of forecastData; track item.time) {
+      <div class="hour-item">
+        <span class="time">{{ item.time }}</span>
+        <app-weather-icon [icon]="item.icon" size="small"></app-weather-icon>
+        <span class="temp">{{ item.temp }}&deg;</span>
+      </div>
+    }
+  </div>
+</div>

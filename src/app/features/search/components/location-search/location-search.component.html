@@ -1,0 +1,31 @@
+<div class="search-container">
+  <div class="search-input-wrapper glass-panel">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input 
+      type="text" 
+      class="search-input" 
+      [ngModel]="searchQuery()" 
+      (ngModelChange)="onSearchChange($event)"
+      (blur)="closeDropdown()"
+      (focus)="searchQuery() && isDropdownOpen.set(true)"
+      placeholder="Buscar ciudad..."
+    >
+    @if (isSearching()) {
+      <div class="loader"></div>
+    }
+  </div>
+
+  @if (isDropdownOpen() && results().length > 0) {
+    <div class="search-dropdown glass-panel">
+      @for (result of results(); track result.id) {
+        <div class="search-item" (click)="selectLocation(result)">
+          <span class="city">{{ result.name }}</span>
+          <span class="country">{{ result.admin1 ? result.admin1 + ', ' : '' }}{{ result.country }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

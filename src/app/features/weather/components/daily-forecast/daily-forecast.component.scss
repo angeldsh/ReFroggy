@@ -1,0 +1,142 @@
+.daily-forecast {
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    opacity: 0.9;
+  }
+}
+
+.daily-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  .day-wrapper {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+    
+    &.expanded {
+      background-color: rgba(255, 255, 255, 0.05);
+      margin: 4px -8px;
+      padding: 0 8px;
+    }
+    
+    .day-item {
+      display: grid;
+      grid-template-columns: 80px 40px 1fr;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      padding: 8px 0;
+      border-radius: 12px;
+      
+      &:hover {
+        opacity: 0.8;
+      }
+      
+      .day-name {
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      
+      .icon-wrapper {
+        display: flex;
+        justify-content: center;
+      }
+      
+      .temps {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        
+        .min {
+          font-size: 0.95rem;
+          opacity: 0.7;
+          width: 30px;
+          text-align: right;
+        }
+        
+        .max {
+          font-size: 0.95rem;
+          font-weight: 500;
+          width: 30px;
+        }
+        
+        .temp-bar {
+          flex: 1;
+          height: 4px;
+          background: rgba(0, 0, 0, 0.1);
+          border-radius: 2px;
+          position: relative;
+          overflow: hidden;
+          
+          .bar-fill {
+            position: absolute;
+            left: 20%;
+            right: 20%;
+            height: 100%;
+            background: linear-gradient(90deg, #5bb4ff, #ff9d5b);
+            border-radius: 2px;
+          }
+        }
+      }
+    }
+    
+    .hourly-details {
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 4px;
+      animation: expandDown 0.3s ease-out forwards;
+      
+      .hourly-scroll {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+        
+        &::-webkit-scrollbar {
+          height: 4px;
+        }
+        
+        .hour-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+          min-width: 50px;
+          
+          .time {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            white-space: nowrap;
+          }
+          
+          .temp {
+            font-size: 1rem;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .temp-bar {
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+}

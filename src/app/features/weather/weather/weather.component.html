@@ -1,0 +1,48 @@
+<div class="weather-container">
+  <header class="header">
+    <app-location-search></app-location-search>
+  </header>
+
+  @if (store.geolocationDenied() && !store.location()) {
+    <div class="permission-denied glass-panel">
+      <h2>Ubicación necesaria</h2>
+      <p>Por favor, busca una ciudad o permite el acceso a tu ubicación.</p>
+    </div>
+  } @else {
+    @if (store.isLoading() && !store.weather()) {
+      <app-loading-state></app-loading-state>
+    }
+  
+    @if (store.error()) {
+      <app-error-state [error]="store.error()"></app-error-state>
+    }
+  
+    @if (store.weather(); as weather) {
+      <main class="content-grid">
+        <nav class="tabs-nav glass-panel">
+          <button class="tab-btn" [class.active]="selectedTab === 'hoy'" (click)="setTab('hoy')">Hoy</button>
+          <button class="tab-btn" [class.active]="selectedTab === '14dias'" (click)="setTab('14dias')">14 Días</button>
+        </nav>
+
+        <div class="tab-content">
+          @if (selectedTab === 'hoy') {
+            <div class="current-section">
+              <app-current-weather-card [weather]="weather" [condition]="store.currentCondition()" [location]="store.location()"></app-current-weather-card>
+            </div>
+            <!-- Bring back hourly for today -->
+            <div class="hourly-section">
+              <app-hourly-forecast [hourly]="weather.hourly"></app-hourly-forecast>
+            </div>
+          }
+          
+          
+          @if (selectedTab === '14dias') {
+            <div class="forecast-section">
+              <app-daily-forecast [daily]="weather.daily" [hourly]="weather.hourly"></app-daily-forecast>
+            </div>
+          }
+        </div>
+      </main>
+    }
+  }
+</div>
