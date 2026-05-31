@@ -15,4 +15,10 @@ export class CurrentWeatherCardComponent {
   @Input({ required: true }) weather!: WeatherResponse;
   @Input() condition!: WeatherConditionInfo | null;
   @Input() location!: GeocodingResult | null;
+
+  get localTimeFormated(): string {
+    if (!this.weather?.current?.time) return '';
+    const date = new Date(this.weather.current.time);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
 }

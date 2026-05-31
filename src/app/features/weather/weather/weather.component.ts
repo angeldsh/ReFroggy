@@ -33,6 +33,7 @@ export class WeatherComponent implements OnDestroy {
   private currentTheme = '';
   
   selectedTab: 'hoy' | '14dias' = 'hoy';
+  showSecondarySearch = false;
 
   constructor() {
     effect(() => {
@@ -45,6 +46,17 @@ export class WeatherComponent implements OnDestroy {
 
   touchStartX = 0;
   touchEndX = 0;
+
+  getConditionFor(weatherData: any) {
+    if (!weatherData) return null;
+    return this.mapper.getWeatherInfo(weatherData.current.weather_code, weatherData.current.is_day);
+  }
+
+  getLocalTimeFormated(weatherData: any): string {
+    if (!weatherData?.current?.time) return '';
+    const date = new Date(weatherData.current.time);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
 
   setTab(tab: 'hoy' | '14dias') {
     this.selectedTab = tab;

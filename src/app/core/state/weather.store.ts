@@ -19,6 +19,7 @@ export class WeatherStore {
 
   // UI State Signals
   readonly location = signal<GeocodingResult | null>(this.storageService.getItem<GeocodingResult>('lastLocation'));
+  readonly secondaryLocation = signal<GeocodingResult | null>(this.storageService.getItem<GeocodingResult>('secondaryLocation'));
   readonly geolocationDenied = signal<boolean>(false);
   
   // Weather rxResource
@@ -30,10 +31,22 @@ export class WeatherStore {
     }
   });
 
+  readonly secondaryWeatherResource = rxResource<WeatherResponse | null, GeocodingResult | null>({
+    params: () => this.secondaryLocation(),
+    stream: ({ params }) => {
+      if (!params) return of(null);
+      return this.weatherService.getForecast(params.latitude, params.longitude);
+    }
+  });
+
   // Computed Derived State
   readonly weather = computed(() => this.weatherResource.value());
   readonly isLoading = computed(() => this.weatherResource.isLoading());
   readonly error = computed(() => this.weatherResource.error());
+  
+  readonly secondaryWeather = computed(() => this.secondaryWeatherResource.value());
+  readonly isSecondaryLoading = computed(() => this.secondaryWeatherResource.isLoading());
+  readonly secondaryError = computed(() => this.secondaryWeatherResource.error());
   
   readonly currentCondition = computed(() => {
     const data = this.weather();
@@ -62,5 +75,15 @@ export class WeatherStore {
   setLocation(loc: GeocodingResult) {
     this.location.set(loc);
     this.storageService.setItem('lastLocation', loc);
+  }
+
+  setSecondaryLocation(loc: GeocodingResult) {
+    this.secondaryLocation.set(loc);
+    this.storageService.setItem('secondaryLocation', loc);
+  }
+
+  clearSecondaryLocation() {
+    this.secondaryLocation.set(null);
+    this.storageService.removeItem('secondaryLocation');
   }
 }

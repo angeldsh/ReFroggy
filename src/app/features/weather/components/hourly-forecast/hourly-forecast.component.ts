@@ -18,6 +18,7 @@ interface HourlyData {
 })
 export class HourlyForecastComponent implements OnChanges {
   @Input({ required: true }) hourly!: HourlyWeather;
+  @Input() currentTime?: string; // e.g. "2026-05-31T21:30"
   
   mapper = inject(WeatherCodeMapperService);
   forecastData: HourlyData[] = [];
@@ -29,11 +30,15 @@ export class HourlyForecastComponent implements OnChanges {
   private processData() {
     if (!this.hourly) return;
     
-    const now = new Date();
-    // find index closest to now
+    // Use the location's current time if available, otherwise fallback to local browser time
+    const currentLocTimeStr = this.currentTime || new Date().toISOString();
+    // Get the hour part (e.g. "2026-05-31T21")
+    const currentHourPrefix = currentLocTimeStr.substring(0, 13);
+    
+    // find index matching the current hour of the location
     let startIndex = 0;
     for (let i = 0; i < this.hourly.time.length; i++) {
-      if (new Date(this.hourly.time[i]) >= now) {
+      if (this.hourly.time[i].startsWith(currentHourPrefix) || this.hourly.time[i] > currentLocTimeStr) {
         startIndex = i;
         break;
       }

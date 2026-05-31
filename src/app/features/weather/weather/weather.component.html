@@ -26,15 +26,88 @@
 
         <div class="tab-content">
           @if (selectedTab === 'hoy') {
-            <div class="current-section">
-              <app-current-weather-card [weather]="weather" [condition]="store.currentCondition()" [location]="store.location()"></app-current-weather-card>
-            </div>
-            <!-- Bring back hourly for today -->
-            <div class="hourly-section">
-              <app-hourly-forecast [hourly]="weather.hourly"></app-hourly-forecast>
-            </div>
+            @if (store.secondaryLocation(); as secLoc) {
+              <!-- Unified Dual View -->
+              <div class="unified-dual-view">
+                @if (store.secondaryWeather(); as secWeather) {
+                  <!-- Unified Dual Card -->
+                  <div class="dual-weather-card glass-panel">
+
+                    <div class="dual-header">
+                      <!-- Primary Column -->
+                      <div class="city-col primary">
+                        <h2 class="city-name">{{ store.location()?.name }}</h2>
+                        <div class="temp-row">
+                          <span class="temperature">{{ weather.current.temperature_2m | number:'1.0-0' }}&deg;</span>
+                          <app-weather-icon [icon]="getConditionFor(weather)?.icon || 'unknown'" size="medium"></app-weather-icon>
+                        </div>
+                        <span class="local-time">{{ getLocalTimeFormated(weather) }}</span>
+                      </div>
+                      
+                      <div class="divider">
+                        <span>VS</span>
+                      </div>
+
+                      <!-- Secondary Column -->
+                      <div class="city-col secondary">
+                        <h2 class="city-name">
+                          Ru 💛
+                          <button class="btn-clear-inline" (click)="store.clearSecondaryLocation()" title="Quitar secundaria">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                          </button>
+                        </h2>
+                        <div class="temp-row">
+                          <span class="temperature">{{ secWeather.current.temperature_2m | number:'1.0-0' }}&deg;</span>
+                          <app-weather-icon [icon]="getConditionFor(secWeather)?.icon || 'unknown'" size="medium"></app-weather-icon>
+                        </div>
+                        <span class="local-time">{{ getLocalTimeFormated(secWeather) }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Stacked Hourly Forecasts -->
+                  <div class="stacked-hourly-section">
+                    <div class="hourly-row">
+                      <div class="row-label">{{ store.location()?.name }}</div>
+                      <app-hourly-forecast [hourly]="weather.hourly" [currentTime]="weather.current.time" class="compact"></app-hourly-forecast>
+                    </div>
+                    <div class="hourly-row">
+                      <div class="row-label">Ru 💛</div>
+                      <app-hourly-forecast [hourly]="secWeather.hourly" [currentTime]="secWeather.current.time" class="compact"></app-hourly-forecast>
+                    </div>
+                  </div>
+                } @else if (store.isSecondaryLoading()) {
+                  <app-loading-state></app-loading-state>
+                }
+              </div>
+            } @else {
+              <!-- Single View -->
+              <div class="single-view">
+                <div class="current-section">
+                  <app-current-weather-card [weather]="weather" [condition]="store.currentCondition()" [location]="store.location()"></app-current-weather-card>
+                </div>
+                <div class="hourly-section">
+                  <app-hourly-forecast [hourly]="weather.hourly" [currentTime]="weather.current.time"></app-hourly-forecast>
+                </div>
+                <div class="add-secondary">
+                  @if (showSecondarySearch) {
+                    <div class="secondary-search-box glass-panel">
+                      <p>Añadir ciudad secundaria:</p>
+                      <app-location-search mode="secondary"></app-location-search>
+                      <button class="btn-cancel" (click)="showSecondarySearch = false">Cancelar</button>
+                    </div>
+                  } @else {
+                    <button class="btn-add-secondary glass-panel" (click)="showSecondarySearch = true">
+                      + Añadir ciudad secundaria
+                    </button>
+                  }
+                </div>
+              </div>
+            }
           }
-          
           
           @if (selectedTab === '14dias') {
             <div class="forecast-section">

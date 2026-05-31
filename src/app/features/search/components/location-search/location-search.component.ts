@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeocodingService } from '../../../../core/services/geocoding.service';
@@ -15,6 +15,8 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError 
 export class LocationSearchComponent {
   private geocodingService = inject(GeocodingService);
   private store = inject(WeatherStore);
+
+  @Input() mode: 'primary' | 'secondary' = 'primary';
 
   searchQuery = signal('');
   results = signal<GeocodingResult[]>([]);
@@ -51,7 +53,11 @@ export class LocationSearchComponent {
   }
 
   selectLocation(loc: GeocodingResult) {
-    this.store.setLocation(loc);
+    if (this.mode === 'primary') {
+      this.store.setLocation(loc);
+    } else {
+      this.store.setSecondaryLocation(loc);
+    }
     this.isDropdownOpen.set(false);
     this.searchQuery.set('');
   }

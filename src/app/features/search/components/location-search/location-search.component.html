@@ -11,7 +11,7 @@
       (ngModelChange)="onSearchChange($event)"
       (blur)="closeDropdown()"
       (focus)="searchQuery() && isDropdownOpen.set(true)"
-      placeholder="Buscar ciudad..."
+      [placeholder]="mode === 'primary' ? 'Buscar ciudad...' : 'Buscar ubicación secundaria...'"
     >
     @if (isSearching()) {
       <div class="loader"></div>
