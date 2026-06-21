@@ -1,46 +1,57 @@
 # Froggy Weather App 🐸🌦️
 
-Una aplicación meteorológica moderna, rápida y responsive, inspirada en la clásica experiencia "Froggy" de Google Weather. Desarrollada con **Angular 20** bajo el modelo de Standalone Components y utilizando las APIs de **Open-Meteo**.
+A modern, fast, and responsive weather application inspired by the classic Google Weather "Froggy" experience. Built with **Angular 20** using the Standalone Components architecture and powered by **Open-Meteo APIs**.
 
-## Características Principales
+## Key Features
 
-- **Arquitectura Moderna Angular**: Uso exclusivo de Standalone Components (sin `NgModules`).
-- **Estado Reactivo Avanzado**: Utilización de Angular Signals y la nueva `Resource API` (`rxResource`) para cargas asíncronas limpias y predecibles.
-- **PWA Ready**: Funciona offline gracias a la implementación de Angular Service Worker con estrategias de caché personalizadas (freshness/stale-while-revalidate) para las peticiones a la API.
-- **Diseño Glassmorphism**: Interfaz translúcida y moderna.
-- **Modos Dinámicos**: Fondos que cambian automáticamente según la hora del día y la condición climática (Despejado, Lluvia, Tormenta, etc.).
-- **Modo Oscuro Integrado**: Soporte nativo a través de `prefers-color-scheme`.
-- **Responsive & Mobile First**: Diseñada principalmente para ser utilizada y consumida en dispositivos móviles, soportando visualización óptima en pantallas grandes.
-- **Geolocalización Automática**: Acceso al tiempo local inmediato, con posibilidad de buscar cualquier otra ciudad en el mundo.
+- **Modern Angular Architecture**: Built exclusively with Standalone Components (no `NgModules`).
+- **Advanced Reactive State Management**: Leverages Angular Signals and the new `Resource API` (`rxResource`) for clean and predictable asynchronous data handling.
+- **PWA Ready**: Works offline thanks to Angular Service Worker implementation with custom caching strategies (freshness / stale-while-revalidate) for API requests.
+- **Glassmorphism Design**: A modern, translucent user interface.
+- **Dynamic Themes**: Backgrounds automatically adapt based on the time of day and weather conditions (Clear Sky, Rain, Thunderstorm, etc.).
+- **Built-in Dark Mode**: Native support through `prefers-color-scheme`.
+- **Responsive & Mobile-First**: Primarily designed for mobile devices while providing an optimized experience on larger screens.
+- **Automatic Geolocation**: Instantly displays local weather and allows searching for any city worldwide.
 
-## Instalación y Ejecución
+## Installation & Setup
 
-1. Clona el repositorio.
-2. Instala las dependencias:
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd froggy-weather-app
+   ```
+
+2. Install dependencies:
    ```bash
    npm install
    ```
-3. Ejecuta el servidor de desarrollo:
+
+3. Start the development server:
    ```bash
    ng serve
    ```
-4. Navega a `http://localhost:4200/`.
 
-## Integración con APIs
+4. Open your browser and navigate to:
+   ```
+   http://localhost:4200/
+   ```
 
-El proyecto utiliza las APIs públicas y gratuitas de **Open-Meteo**:
-- `Forecast API`: Para la obtención de la temperatura actual, pronóstico horario y pronóstico de 7 días.
-- `Geocoding API`: Para la búsqueda asíncrona de ciudades en todo el mundo.
+## API Integration
 
-No se requieren API keys.
+This project uses the free public APIs provided by **Open-Meteo**:
 
-## Tecnologías Utilizadas
+- **Forecast API**: Retrieves current temperature, hourly forecasts, and 7-day weather forecasts.
+- **Geocoding API**: Enables asynchronous city search worldwide.
+
+No API keys are required.
+
+## Technologies Used
 
 - **Angular 20**
 - **TypeScript**
 - **SCSS**
-- **RxJS** (limitado a necesidades complejas de eventos asíncronos como `debounceTime` en el input de búsqueda).
+- **RxJS** (used only where necessary for more complex asynchronous event handling, such as `debounceTime` in the search input)
 
-## Licencia
+## License
 
-Desarrollado bajo licencia MIT.
+Released under the MIT License.
