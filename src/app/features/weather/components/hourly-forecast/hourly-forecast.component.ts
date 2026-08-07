@@ -10,7 +10,9 @@ interface HourlyData {
   temp: number;
   icon: string;
   pop: number;
+  precipitation: number;
   isNow: boolean;
+  flipped?: boolean;
 }
 
 @Component({
@@ -35,6 +37,10 @@ export class HourlyForecastComponent implements OnChanges {
     this.processData();
   }
 
+  toggleFlip(item: HourlyData) {
+    item.flipped = !item.flipped;
+  }
+
   private processData() {
     if (!this.hourly) return;
     
@@ -57,6 +63,7 @@ export class HourlyForecastComponent implements OnChanges {
       const isDay = hour >= 6 && hour <= 19;
       const info = this.mapper.getWeatherInfo(this.hourly.weather_code[i], isDay);
       const pop = this.hourly.precipitation_probability?.[i] ?? 0;
+      const precipitation = this.hourly.precipitation?.[i] ?? 0;
       const isNow = i === startIndex;
       
       this.forecastData.push({
@@ -64,7 +71,9 @@ export class HourlyForecastComponent implements OnChanges {
         temp: Math.round(this.hourly.temperature_2m[i]),
         icon: info.icon,
         pop,
-        isNow
+        precipitation,
+        isNow,
+        flipped: false
       });
     }
   }

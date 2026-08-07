@@ -1,15 +1,15 @@
 .hourly-forecast {
-  padding: 20px 24px;
+  padding: 18px 20px;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 
   .section-title {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     font-weight: 700;
     color: #FFF;
     margin: 0;
@@ -25,8 +25,8 @@
 .hourly-scroll {
   display: flex;
   overflow-x: auto;
-  gap: 12px;
-  padding: 4px 4px 10px;
+  gap: 10px;
+  padding: 4px 2px 10px;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   
@@ -38,68 +38,144 @@
     background: rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-full);
   }
+
+  .hour-card-container {
+    perspective: 600px;
+    width: 66px;
+    min-width: 66px;
+    height: 94px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    user-select: none;
+
+    .hour-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+
+      &.is-flipped {
+        transform: rotateY(180deg);
+      }
+    }
+  }
   
   .hour-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    min-width: 68px;
-    padding: 12px 10px;
-    border-radius: var(--radius-md);
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    scroll-snap-align: start;
-    transition: all 0.2s ease;
+    justify-content: space-between;
+    padding: 10px 6px 8px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     
     &:hover {
-      background: rgba(255, 255, 255, 0.14);
-      transform: translateY(-2px);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
     &.is-now {
-      background: var(--primary-glow);
-      border-color: var(--primary);
-      box-shadow: 0 4px 14px var(--primary-glow);
+      background: linear-gradient(180deg, rgba(56, 189, 248, 0.35) 0%, rgba(14, 165, 233, 0.15) 100%);
+      border-color: #38BDF8;
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
 
       .time {
         font-weight: 700;
         color: #FFF;
       }
     }
-    
-    .time {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-      white-space: nowrap;
+
+    &.front-face {
+      .rain-indicator-dot {
+        position: absolute;
+        top: 2px;
+        right: 0px;
+        font-size: 0.65rem;
+        filter: drop-shadow(0 2px 4px rgba(56, 189, 248, 0.6));
+        animation: floatPulse 2s ease-in-out infinite;
+      }
+      
+      .time {
+        font-size: 0.78rem;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 600;
+        white-space: nowrap;
+        line-height: 1;
+      }
+
+      .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2px 0;
+      }
+      
+      .temp {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #FFF;
+        line-height: 1;
+      }
     }
 
-    .icon-wrapper {
-      margin: 2px 0;
-    }
-    
-    .temp {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: #FFF;
-    }
+    &.back-face {
+      transform: rotateY(180deg);
+      background: linear-gradient(180deg, rgba(14, 165, 233, 0.35) 0%, rgba(15, 23, 42, 0.85) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.5);
 
-    .pop-badge {
-      font-size: 0.68rem;
-      font-weight: 600;
-      color: #38BDF8;
-      background: rgba(56, 189, 248, 0.18);
-      padding: 2px 6px;
-      border-radius: var(--radius-full);
-      white-space: nowrap;
+      .time {
+        font-size: 0.72rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 600;
+      }
+
+      .rain-detail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+
+        .drop-icon {
+          font-size: 0.85rem;
+        }
+
+        .pop-val {
+          font-size: 0.92rem;
+          font-weight: 800;
+          color: #38BDF8;
+          line-height: 1;
+        }
+
+        .mm-val {
+          font-size: 0.62rem;
+          color: rgba(255, 255, 255, 0.8);
+          font-weight: 600;
+        }
+      }
+
+      .flip-back-hint {
+        font-size: 0.65rem;
+        opacity: 0.6;
+      }
     }
   }
 }
 
 :host.compact {
   .hourly-forecast {
-    padding: 12px 14px;
+    padding: 2px 0;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
@@ -108,6 +184,42 @@
   .section-header {
     display: none;
   }
+
+  .hourly-scroll {
+    gap: 8px;
+    padding: 2px 0;
+
+    .hour-card-container {
+      width: 60px;
+      min-width: 60px;
+      height: 86px;
+    }
+
+    .hour-item {
+      border-radius: 16px;
+      padding: 8px 4px 6px;
+
+      &.front-face {
+        .time {
+          font-size: 0.74rem;
+        }
+        .temp {
+          font-size: 0.95rem;
+        }
+      }
+
+      &.back-face {
+        .pop-val {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+}
+
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
 }
 
 

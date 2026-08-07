@@ -47,19 +47,26 @@
     }
   }
 
-  .btn-clear-search {
-    background: rgba(255, 255, 255, 0.15);
-    color: var(--text-primary);
+  .clear-btn {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #FFF;
     border-radius: 50%;
     width: 24px;
     height: 24px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+    padding: 0;
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
+    &:hover, &:active {
+      background: rgba(239, 68, 68, 0.7);
+      border-color: rgba(239, 68, 68, 0.9);
+      color: #FFF;
+      transform: scale(1.1);
     }
   }
 }
@@ -77,42 +84,62 @@
 .favorites-bar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
   overflow-x: auto;
-  padding: 2px 4px;
   -webkit-overflow-scrolling: touch;
-  
-  .fav-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
+  scroll-behavior: smooth;
+  margin-top: 2px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+
+  .fav-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+
+    .star-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .fav-label {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 700;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
   }
 
   .fav-chips {
     display: flex;
-    gap: 6px;
-    overflow-x: auto;
+    gap: 8px;
+    align-items: center;
 
     .chip-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: var(--text-secondary);
-      padding: 4px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #FFF;
+      padding: 5px 12px;
       border-radius: var(--radius-full);
-      font-size: 0.82rem;
-      font-weight: 500;
+      font-size: 0.85rem;
+      font-weight: 600;
       white-space: nowrap;
+      min-height: 32px;
+      box-sizing: border-box;
       cursor: pointer;
       user-select: none;
-      transition: all 0.2s ease;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
-      &:hover {
+      &:hover, &:active {
         background: rgba(255, 255, 255, 0.22);
         color: #FFF;
       }
@@ -121,24 +148,35 @@
         background: var(--primary-glow);
         border-color: var(--primary);
         color: #FFF;
-        font-weight: 600;
+        font-weight: 700;
+        box-shadow: 0 2px 8px var(--primary-glow);
+      }
+
+      .chip-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
       }
 
       .chip-remove {
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.2);
         border-radius: 50%;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: var(--text-secondary);
+        color: rgba(255, 255, 255, 0.85);
         padding: 0;
+        margin-left: 2px;
         transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
 
-        &:hover {
-          background: rgba(239, 68, 68, 0.5);
+        &:hover, &:active {
+          background: rgba(239, 68, 68, 0.8);
           color: #FFF;
+          transform: scale(1.15);
         }
       }
     }
@@ -204,13 +242,13 @@
       flex-shrink: 0;
 
       &:hover {
-        background: rgba(250, 204, 21, 0.2);
-        color: #FACC15;
+        background: rgba(251, 191, 36, 0.2);
+        color: #FBBF24;
       }
 
       &.is-fav {
-        color: #FACC15;
-        background: rgba(250, 204, 21, 0.25);
+        color: #FBBF24;
+        background: rgba(251, 191, 36, 0.2);
       }
     }
   }

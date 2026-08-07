@@ -83,24 +83,33 @@ export class WeatherComponent implements OnDestroy {
   }
 
   onTouchStart(event: TouchEvent) {
-    this.touchStartX = event.changedTouches[0].screenX;
-    this.touchStartY = event.changedTouches[0].screenY;
+    this.touchStartX = event.changedTouches[0].clientX;
+    this.touchStartY = event.changedTouches[0].clientY;
   }
 
   onTouchMove(event: TouchEvent) {
-    const currentY = event.changedTouches[0].screenY;
+    const currentX = event.changedTouches[0].clientX;
+    const currentY = event.changedTouches[0].clientY;
+    const deltaX = currentX - this.touchStartX;
     const deltaY = currentY - this.touchStartY;
-    if (window.scrollY === 0 && deltaY > 0) {
-      this.pullProgress = Math.min(100, Math.round(deltaY / 1.5));
+
+    // Only activate pull-to-refresh if touch started at top, pulling straight down strongly
+    if (window.scrollY === 0 && this.touchStartY < 140 && deltaY > 50 && deltaY > Math.abs(deltaX) * 2.5) {
+      this.pullProgress = Math.min(100, Math.round((deltaY - 50) / 1.2));
+    } else {
+      this.pullProgress = 0;
     }
   }
 
   onTouchEnd(event: TouchEvent) {
-    this.touchEndX = event.changedTouches[0].screenX;
-    this.touchEndY = event.changedTouches[0].screenY;
+    this.touchEndX = event.changedTouches[0].clientX;
+    this.touchEndY = event.changedTouches[0].clientY;
 
+    const deltaX = this.touchEndX - this.touchStartX;
     const deltaY = this.touchEndY - this.touchStartY;
-    if (window.scrollY === 0 && deltaY > 80) {
+
+    // Require deliberate > 140px pull from top to refresh
+    if (window.scrollY === 0 && this.touchStartY < 140 && deltaY > 140 && deltaY > Math.abs(deltaX) * 2.5) {
       this.onRefresh();
     } else {
       this.pullProgress = 0;
