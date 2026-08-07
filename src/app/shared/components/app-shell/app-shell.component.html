@@ -1,3 +1,38 @@
-<main class="app-shell">
-  <router-outlet></router-outlet>
-</main>
+<div class="app-shell">
+  <div class="app-background-container">
+    <!-- Double Buffer Cross-Fade Backgrounds -->
+    <div class="bg-layer bg-back" [style.backgroundImage]="'url(' + bgBack() + ')'"></div>
+    <div class="bg-layer bg-front" [class.fade-in]="isCrossFading()" [style.backgroundImage]="'url(' + bgFront() + ')'"></div>
+
+    <!-- Dynamic Ambient Weather Particle Overlays -->
+    @if (activeWeatherCategory() === 'rain' || activeWeatherCategory() === 'storm') {
+      <div class="ambient-overlay rain-particles">
+        <div class="drop-line line-a"></div>
+        <div class="drop-line line-b"></div>
+        <div class="drop-line line-c"></div>
+      </div>
+    }
+    @if (activeWeatherCategory() === 'snow') {
+      <div class="ambient-overlay snow-particles">
+        <div class="flake-particle p1"></div>
+        <div class="flake-particle p2"></div>
+        <div class="flake-particle p3"></div>
+      </div>
+    }
+    @if (isNight()) {
+      <div class="ambient-overlay night-stars">
+        <div class="star-glow s1"></div>
+        <div class="star-glow s2"></div>
+        <div class="star-glow s3"></div>
+      </div>
+    }
+
+    <!-- Dark ambient gradient tint to guarantee high contrast text legibility -->
+    <div class="ambient-vignette"></div>
+  </div>
+
+  <main class="app-main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+

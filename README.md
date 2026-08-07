@@ -1,108 +1,75 @@
-# 🐸 Froggy Weather App
+# 🐸 ReFroggy Weather App
 
-A modern, responsive weather application inspired by the classic Google Weather “Froggy” experience.
+A modern, high-performance, mobile-first weather application inspired by the classic Google Weather “Froggy” experience.
 
-Built with **Angular 21**, **TypeScript**, **SCSS**, **Angular Signals**, the **Resource API** and **Open-Meteo APIs**.
+Built with **Angular 21**, **TypeScript**, **SCSS**, **Angular Signals**, **Resource API**, **Open-Meteo APIs**, **SVG Vector Micro-animations**, and **Glassmorphic UI**.
 
-🔗 **Live Demo:** [weatherfroggy.netlify.app](https://weatherfroggy.netlify.app/)
+🔗 **Live Demo:** [weatherfroggy.netlify.app](https://weatherfroggy.netlify.app/)  
 📂 **Repository:** [github.com/angeldsh/ReFroggy](https://github.com/angeldsh/ReFroggy)
 
 ---
 
 ## 📖 Overview
 
-**Froggy Weather App** is a mobile-first weather application that allows users to check current weather conditions and forecasts using their current location or by searching for cities worldwide.
-
-The project was entirely generated using **ChatGPT** as an experiment in AI-assisted development. It explores how modern AI tools can scaffold and build a complete application using modern Angular features such as **Standalone Components**, **Signals**, the **Resource API**, API integration, responsive UI design and Progressive Web App concepts.
+**ReFroggy** delivers a premium, fast, interactive weather experience. Users can inspect current weather conditions, detailed hourly forecasts, and a 14-day temperature trend visualizer for their current geolocation or any city worldwide.
 
 ---
 
-## ✨ Key Features
+## ✨ Key Features & Enhancements
 
-- **Current Weather & Location Comparison**
-  - Displays current temperature and weather conditions, and allows searching a secondary location to compare data.
+- **🎨 Glassmorphism & Dynamic Themes**
+  - HSL-tailored color design system with condition-aware themes (Day/Night, Clear, Cloudy, Rain, Storm, Snow, Fog).
+  - Double-buffered ambient background container with seamless cross-fading transitions.
+  - Animated particle overlays (falling raindrops, floating snowflakes, glowing starry night).
 
-- **Location Search**
-  - Search for cities worldwide using the Open-Meteo Geocoding API.
+- **☀️ Animated Vector SVG Weather Icons**
+  - High-DPI custom vector SVG icons featuring keyframe animations (rotating sun rays, blinking stars, swaying snowflakes, rain drop physics, lightning flashes).
 
-- **Hourly & 14-Day Forecast**
-  - Shows upcoming weather information for both the current day and the next two weeks.
+- **⚡ Fast Response & API Caching**
+  - In-memory 10-minute caching layer to eliminate reloading delays when switching between locations.
+  - Search autocomplete with 250ms debouncing and search result caching.
 
-- **Automatic Geolocation**
-  - Detects the user’s current location and loads local weather data automatically.
+- **⭐ Favorite Cities Management**
+  - Quick-access favorite city chips persisted in `localStorage`.
+  - 1-tap removal directly from chips.
+  - Star toggle buttons in both search dropdown results and the main weather card.
 
-- **Modern Angular Architecture**
-  - Built with Angular 21 using Standalone Components, without `NgModules`.
+- **📊 Rich Weather Metrics & 14-Day Visualizer**
+  - Current condition card: Sensación Térmica / Feels Like, Humidity, Wind speed + compass direction (N, NE, E, SE, S, SW, W, NW), UV Index level gauge (Low/Moderate/High/Very High/Extreme), Precipitation (mm), Sunrise/Sunset, Today's Max/Min.
+  - 4-column 14-day forecast grid with proportional min-max temperature spectrum bars.
 
-- **Reactive State Management**
-  - Centralized state handling using a `WeatherStore` based on Angular Signals and the new `rxResource` API for clean asynchronous data.
+- **📱 Touch Gestures & Pull-to-Refresh**
+  - Mobile swipe gestures for tab navigation (*Hoy / Today* ↔ *14 Días / 14 Days*).
+  - Native Pull-to-Refresh swipe gesture from top of screen.
 
-- **Progressive Web App**
-  - Includes Angular Service Worker support and caching strategies for a more app-like experience.
-
-- **Dynamic Weather Themes**
-  - The interface and background images (featuring the classic "Froggy") adapt visually based on the current weather conditions and time of day.
-
-- **Responsive Design**
-  - Mobile-first layout with support for tablets and desktop screens.
+- **🌐 Automatic User Browser Language Detection**
+  - Integrated `LanguageService` that detects the user's browser language (`navigator.language`) to serve bilingual Spanish (ES) or English (EN) interface text automatically.
 
 ---
 
 ## 🧩 Tech Stack
 
-- Angular 21
-- TypeScript
-- SCSS
-- Angular Signals
-- Angular `rxResource` API
-- RxJS
-- Angular Service Worker
-- Open-Meteo Forecast API
-- Open-Meteo Geocoding API
+- **Framework:** Angular 21 (Standalone Components)
+- **State Management:** Angular Signals & `rxResource` API
+- **Styling:** Vanilla SCSS, CSS Custom Properties, Glassmorphism
+- **Graphics & Motion:** SVG Animations, Hardware-accelerated CSS Keyframes
+- **APIs:** Open-Meteo Forecast & Geocoding APIs (No API key required)
+- **PWA:** Angular Service Worker (`ngsw-config.json`)
 
 ---
 
 ## 🏗️ Architecture
 
-The application follows a modern, scalable Angular structure based on feature modules and separated responsibilities:
-
 ```text
 src/
 ├── app/
-│   ├── core/            # Core state (WeatherStore), services, and models
-│   ├── features/        # Feature-based components (Search, Weather views)
-│   ├── shared/          # Reusable UI elements (Loaders, Icons, App Shell)
-│   ├── app.component.ts # Main application component
+│   ├── core/            # WeatherStore, LanguageService, WeatherService, GeocodingService, Models
+│   ├── features/        # Search & Weather feature modules
+│   ├── shared/          # Reusable WeatherIcon, AppShell, Loading & Error states
+│   ├── app.component.ts # Root component
 │   └── app.config.ts    # Application configuration
-└── public/              # Static assets (Froggy images, icons, manifest)
+└── public/              # Froggy backgrounds, icons, manifest
 ```
-
-The project focuses on keeping UI components (features/shared), API integration, and state management (core) clearly separated.
-
----
-
-## 🌦️ API Integration
-
-This project uses the free public APIs provided by **Open-Meteo**.
-
-### Forecast API
-
-Used to retrieve:
-
-- Current weather
-- Hourly forecast data
-- Daily forecast data
-- Weather condition codes
-
-### Geocoding API
-
-Used to:
-
-- Search cities by name
-- Retrieve latitude and longitude
-- Support worldwide city lookup
-
-No API key is required.
 
 ---
 
@@ -110,75 +77,25 @@ No API key is required.
 
 ### Prerequisites
 
-Make sure you have installed:
-
 - Node.js 18+
 - Angular CLI
 
----
-
 ### Installation
-
-Clone the repository:
 
 ```bash
 git clone https://github.com/angeldsh/ReFroggy.git
 cd ReFroggy
-```
-
-Install dependencies:
-
-```bash
 npm install
-```
-
-Start the development server:
-
-```bash
 ng serve
 ```
 
-Open the application in your browser:
-
-```text
-http://localhost:4200/
-```
-
----
-
-## 🧪 What This Project Demonstrates
-
-This project serves as an exploration of AI-assisted software development. It demonstrates how ChatGPT can be used to:
-
-- Build modern Angular applications using Standalone Components.
-- Use Angular Signals for reactive state management.
-- Integrate external REST APIs.
-- Handle asynchronous data flows with Angular Resource API and RxJS where needed.
-- Build responsive, mobile-first user interfaces.
-- Implement PWA features using Angular Service Worker.
-- Structure frontend applications in a clean and maintainable way.
-
----
-
-## 🔮 Future Improvements
-
-Possible future improvements include:
-
-- Add more detailed hourly forecast views.
-- Improve accessibility support.
-- Add weather alerts if supported by the API.
-- Add unit tests for services and components.
-- Improve loading and error states.
-- Add saved favourite locations.
-- Add offline fallback screens for PWA mode.
+Open your browser at `http://localhost:4200/`.
 
 ---
 
 ## 👨‍💻 About the Author
 
 Hi, I'm **Ángel del Solar**, a Software Developer with commercial experience building and maintaining business web applications using **Java**, **Spring Boot**, **Angular**, **TypeScript** and **SQL Server**.
-
-I am relocating to **County Kildare, Ireland** in September 2026 and open to **Software Developer**, **Full Stack Developer** and **Java Developer** opportunities.
 
 - Portfolio: https://angeldsh.github.io/
 - GitHub: https://github.com/angeldsh

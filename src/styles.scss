@@ -1,71 +1,130 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: #0A84FF;
-  --bg-color: #f4f6f8;
-  --text-primary: #1c1c1e;
-  --text-secondary: #636366;
-  --card-bg: rgba(255, 255, 255, 0.2);
-  --card-border: rgba(255, 255, 255, 0.3);
-  --glass-blur: blur(16px);
-  --shadow-color: rgba(0, 0, 0, 0.05);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #000000;
-    --text-primary: #ffffff;
-    --text-secondary: #ebebf599;
-    --card-bg: rgba(10, 10, 15, 0.15);
-    --card-border: rgba(255, 255, 255, 0.08);
-    --shadow-color: rgba(0, 0, 0, 0.1);
-  }
+  --primary: #38BDF8;
+  --primary-glow: rgba(56, 189, 248, 0.35);
+  --bg-color: #0F172A;
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.75);
+  --text-muted: rgba(255, 255, 255, 0.55);
+  
+  --card-bg: rgba(15, 23, 42, 0.45);
+  --card-bg-hover: rgba(30, 41, 59, 0.55);
+  --card-border: rgba(255, 255, 255, 0.18);
+  --card-border-glow: rgba(255, 255, 255, 0.35);
+  --glass-blur: blur(20px);
+  --shadow-color: rgba(0, 0, 0, 0.35);
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
+  --radius-full: 9999px;
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  touch-action: manipulation;
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background-image 1s ease, color 0.8s ease;
-  overflow-x: hidden;
+  transition: color 0.5s ease;
+  position: relative;
 }
 
-/* Glassmorphism utility */
+/* Premium Glassmorphism Card Utility */
 .glass-panel {
   background: var(--card-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--card-border);
-  border-radius: 24px;
-  box-shadow: 0 8px 32px var(--shadow-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 
+    0 12px 32px var(--shadow-color),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   padding: 20px;
   transform: translateZ(0);
+  will-change: transform;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+
+  &.interactive:active {
+    transform: scale(0.985);
+  }
 }
 
-/* Dynamic Themes */
-body.theme-clear-day { color: #ffffff; }
-body.theme-clear-night { color: #ffffff; }
-body.theme-cloudy-day { color: #ffffff; }
-body.theme-cloudy-night { color: #ffffff; }
-body.theme-rain { color: #ffffff; }
-body.theme-storm { color: #ffffff; }
-body.theme-snow { color: #ffffff; }
-body.theme-fog { color: #ffffff; }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.4); border-radius: 10px; }
-
-/* Remove shadow from icons */
-.emoji, svg {
-  text-shadow: none !important;
+/* Micro-interaction Buttons */
+button {
+  font-family: var(--font-family);
+  cursor: pointer;
+  outline: none;
+  border: none;
+  user-select: none;
+  
+  &:active {
+    transform: scale(0.96);
+  }
 }
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: var(--radius-full);
+  &:hover {
+    background: rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* Utility Animations */
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Weather Themes Color Tokens */
+body.theme-clear-day { --primary: #38BDF8; --primary-glow: rgba(56, 189, 248, 0.4); }
+body.theme-clear-night { --primary: #818CF8; --primary-glow: rgba(129, 140, 248, 0.4); }
+body.theme-cloudy-day { --primary: #38BDF8; --primary-glow: rgba(56, 189, 248, 0.3); }
+body.theme-cloudy-night { --primary: #A78BFA; --primary-glow: rgba(167, 139, 250, 0.3); }
+body.theme-rain { --primary: #0EA5E9; --primary-glow: rgba(14, 165, 233, 0.4); }
+body.theme-storm { --primary: #FACC15; --primary-glow: rgba(250, 204, 21, 0.4); }
+body.theme-snow { --primary: #E0F2FE; --primary-glow: rgba(224, 242, 254, 0.4); }
+body.theme-fog { --primary: #94A3B8; --primary-glow: rgba(148, 163, 184, 0.3); }
+

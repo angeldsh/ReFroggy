@@ -1,68 +1,86 @@
 <div class="weather-container">
   <header class="header">
+    @if (pullProgress > 0 || isRefreshing) {
+      <div class="pull-refresh-indicator" [class.spinning]="isRefreshing" [style.opacity]="pullProgress > 0 ? (pullProgress / 100) : 1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+          <path d="M21.5 2v6h-6M2.5 22v-6h6"></path>
+          <path d="M2 11.5a10 10 0 0 1 18.8-4.3L21.5 8M2.5 16l1 1A10 10 0 0 0 22 12.5"></path>
+        </svg>
+        <span>{{ isRefreshing ? (isEs ? 'Actualizando...' : 'Refreshing...') : (isEs ? 'Desliza para actualizar' : 'Pull to refresh') }}</span>
+      </div>
+    }
+
     <app-location-search></app-location-search>
   </header>
 
   @if (store.geolocationDenied() && !store.location()) {
-    <div class="permission-denied glass-panel">
-      <h2>Ubicación necesaria</h2>
-      <p>Por favor, busca una ciudad o permite el acceso a tu ubicación.</p>
+    <div class="permission-denied glass-panel animate-slide-up">
+      <div class="icon-big">📍</div>
+      <h2>{{ isEs ? 'Ubicación necesaria' : 'Location required' }}</h2>
+      <p>{{ isEs ? 'Busca tu ciudad arriba para comenzar a explorar la previsión.' : 'Search for your city above to explore weather forecasts.' }}</p>
     </div>
   } @else {
     @if (store.isLoading() && !store.weather()) {
       <app-loading-state></app-loading-state>
     }
-  
+
     @if (store.error()) {
       <app-error-state [error]="store.error()"></app-error-state>
     }
-  
+
     @if (store.weather(); as weather) {
-      <main class="content-grid" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+      <main class="content-grid" (touchstart)="onTouchStart($event)" (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
+        <!-- Sliding Pill Tabs -->
         <nav class="tabs-nav glass-panel">
-          <button class="tab-btn" [class.active]="selectedTab === 'hoy'" (click)="setTab('hoy')">Hoy</button>
-          <button class="tab-btn" [class.active]="selectedTab === '14dias'" (click)="setTab('14dias')">14 Días</button>
+          <button class="tab-btn" [class.active]="selectedTab === 'today'" (click)="setTab('today')">
+            <span>{{ isEs ? 'Hoy' : 'Today' }}</span>
+          </button>
+          <button class="tab-btn" [class.active]="selectedTab === '14days'" (click)="setTab('14days')">
+            <span>{{ isEs ? '14 Días' : '14 Days' }}</span>
+          </button>
         </nav>
 
         <div class="tab-content">
-          @if (selectedTab === 'hoy') {
+          @if (selectedTab === 'today') {
             @if (store.secondaryLocation(); as secLoc) {
               <!-- Unified Dual View -->
-              <div class="unified-dual-view">
+              <div class="unified-dual-view animate-slide-up">
                 @if (store.secondaryWeather(); as secWeather) {
                   <!-- Unified Dual Card -->
                   <div class="dual-weather-card glass-panel">
-
                     <div class="dual-header">
                       <!-- Primary Column -->
                       <div class="city-col primary">
+                        <span class="city-label">{{ isEs ? 'Principal' : 'Primary' }}</span>
                         <h2 class="city-name">{{ store.location()?.name }}</h2>
                         <div class="temp-row">
                           <span class="temperature">{{ weather.current.temperature_2m | number:'1.0-0' }}&deg;</span>
                           <app-weather-icon [icon]="getConditionFor(weather)?.icon || 'unknown'" size="medium"></app-weather-icon>
                         </div>
-                        <span class="local-time">{{ getLocalTimeFormated(weather) }}</span>
+                        <span class="local-time">🕒 {{ getLocalTimeFormated(weather) }}</span>
                       </div>
                       
                       <div class="divider">
+                        <span>VS</span>
                       </div>
 
                       <!-- Secondary Column -->
                       <div class="city-col secondary">
-                        <h2 class="city-name">
-                          Ru 💛
-                          <button class="btn-clear-inline" (click)="store.clearSecondaryLocation()" title="Quitar secundaria">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+                        <div class="city-top">
+                          <span class="city-label">{{ isEs ? 'Comparativa' : 'Compare' }}</span>
+                          <button class="btn-clear-inline" (click)="store.clearSecondaryLocation()" [title]="isEs ? 'Quitar comparativa' : 'Remove comparison'">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
                               <line x1="18" y1="6" x2="6" y2="18"></line>
                               <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
                           </button>
-                        </h2>
+                        </div>
+                        <h2 class="city-name">{{ secLoc.name }}</h2>
                         <div class="temp-row">
                           <span class="temperature">{{ secWeather.current.temperature_2m | number:'1.0-0' }}&deg;</span>
                           <app-weather-icon [icon]="getConditionFor(secWeather)?.icon || 'unknown'" size="medium"></app-weather-icon>
                         </div>
-                        <span class="local-time">{{ getLocalTimeFormated(secWeather) }}</span>
+                        <span class="local-time">🕒 {{ getLocalTimeFormated(secWeather) }}</span>
                       </div>
                     </div>
                   </div>
@@ -70,11 +88,11 @@
                   <!-- Stacked Hourly Forecasts -->
                   <div class="stacked-hourly-section">
                     <div class="hourly-row">
-                      <div class="row-label">{{ store.location()?.name }}</div>
+                      <div class="row-label">📍 {{ store.location()?.name }}</div>
                       <app-hourly-forecast [hourly]="weather.hourly" [currentTime]="weather.current.time" class="compact"></app-hourly-forecast>
                     </div>
                     <div class="hourly-row">
-                      <div class="row-label">Ru 💛</div>
+                      <div class="row-label">📍 {{ secLoc.name }}</div>
                       <app-hourly-forecast [hourly]="secWeather.hourly" [currentTime]="secWeather.current.time" class="compact"></app-hourly-forecast>
                     </div>
                   </div>
@@ -88,19 +106,21 @@
                 <div class="current-section">
                   <app-current-weather-card [weather]="weather" [condition]="store.currentCondition()" [location]="store.location()"></app-current-weather-card>
                 </div>
+
                 <div class="hourly-section">
                   <app-hourly-forecast [hourly]="weather.hourly" [currentTime]="weather.current.time"></app-hourly-forecast>
                 </div>
+
                 <div class="add-secondary">
                   @if (showSecondarySearch) {
-                    <div class="secondary-search-box glass-panel">
-                      <p>Añadir ciudad secundaria:</p>
+                    <div class="secondary-search-box glass-panel animate-slide-up">
+                      <p>{{ isEs ? 'Comparar con ciudad secundaria:' : 'Compare with secondary city:' }}</p>
                       <app-location-search mode="secondary"></app-location-search>
-                      <button class="btn-cancel" (click)="showSecondarySearch = false">Cancelar</button>
+                      <button class="btn-cancel" (click)="showSecondarySearch = false">{{ isEs ? 'Cancelar' : 'Cancel' }}</button>
                     </div>
                   } @else {
-                    <button class="btn-add-secondary glass-panel" (click)="showSecondarySearch = true">
-                      + Añadir ciudad secundaria
+                    <button class="btn-add-secondary glass-panel interactive" (click)="showSecondarySearch = true">
+                      {{ isEs ? '➕ Añadir ciudad para comparar' : '➕ Compare with another city' }}
                     </button>
                   }
                 </div>
@@ -108,7 +128,7 @@
             }
           }
           
-          @if (selectedTab === '14dias') {
+          @if (selectedTab === '14days') {
             <div class="forecast-section">
               <app-daily-forecast [daily]="weather.daily" [hourly]="weather.hourly"></app-daily-forecast>
             </div>
@@ -118,3 +138,4 @@
     }
   }
 </div>
+

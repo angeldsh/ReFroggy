@@ -10,6 +10,8 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { WeatherCodeMapperService } from '../../../core/services/weather-code-mapper.service';
 import { WeatherIconComponent } from '../../../shared/components/weather-icon/weather-icon.component';
 
+import { LanguageService } from '../../../core/services/language.service';
+
 @Component({
   selector: 'app-weather',
   imports: [
@@ -28,24 +30,33 @@ import { WeatherIconComponent } from '../../../shared/components/weather-icon/we
 export class WeatherComponent implements OnDestroy {
   store = inject(WeatherStore);
   mapper = inject(WeatherCodeMapperService);
+  langService = inject(LanguageService);
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
   private currentTheme = '';
   
-  selectedTab: 'hoy' | '14dias' = 'hoy';
+  selectedTab: 'today' | '14days' = 'today';
   showSecondarySearch = false;
+  isRefreshing = false;
+  pullProgress = 0;
+
+  get isEs(): boolean {
+    return this.langService.isEs();
+  }
+
+  touchStartX = 0;
+  touchEndX = 0;
+  touchStartY = 0;
+  touchEndY = 0;
 
   constructor() {
     effect(() => {
       const condition = this.store.currentCondition();
       if (condition) {
-        this.updateTheme(condition.category, this.store.weather()?.current.is_day === 1);
+        this.updateTheme(condition.category, this.store.weather()?.current?.is_day === 1);
       }
     });
   }
-
-  touchStartX = 0;
-  touchEndX = 0;
 
   getConditionFor(weatherData: any) {
     if (!weatherData) return null;
@@ -58,29 +69,56 @@ export class WeatherComponent implements OnDestroy {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  setTab(tab: 'hoy' | '14dias') {
+  setTab(tab: 'today' | '14days') {
     this.selectedTab = tab;
+  }
+
+  onRefresh() {
+    this.isRefreshing = true;
+    this.store.refreshWeather();
+    setTimeout(() => {
+      this.isRefreshing = false;
+      this.pullProgress = 0;
+    }, 800);
   }
 
   onTouchStart(event: TouchEvent) {
     this.touchStartX = event.changedTouches[0].screenX;
+    this.touchStartY = event.changedTouches[0].screenY;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    const currentY = event.changedTouches[0].screenY;
+    const deltaY = currentY - this.touchStartY;
+    if (window.scrollY === 0 && deltaY > 0) {
+      this.pullProgress = Math.min(100, Math.round(deltaY / 1.5));
+    }
   }
 
   onTouchEnd(event: TouchEvent) {
     this.touchEndX = event.changedTouches[0].screenX;
-    this.handleSwipe();
+    this.touchEndY = event.changedTouches[0].screenY;
+
+    const deltaY = this.touchEndY - this.touchStartY;
+    if (window.scrollY === 0 && deltaY > 80) {
+      this.onRefresh();
+    } else {
+      this.pullProgress = 0;
+      this.handleSwipe();
+    }
   }
 
   private handleSwipe() {
-    const swipeThreshold = 50;
+    const swipeThreshold = 60;
     const deltaX = this.touchEndX - this.touchStartX;
+    const deltaY = Math.abs(this.touchEndY - this.touchStartY);
 
-    if (deltaX > swipeThreshold) {
-      // Deslizar hacia derecha (volver a la pestaña anterior)
-      this.setTab('hoy');
-    } else if (deltaX < -swipeThreshold) {
-      // Deslizar hacia izquierda (avanzar a la siguiente pestaña)
-      this.setTab('14dias');
+    if (deltaY < 50) {
+      if (deltaX > swipeThreshold) {
+        this.setTab('today');
+      } else if (deltaX < -swipeThreshold) {
+        this.setTab('14days');
+      }
     }
   }
 
@@ -96,39 +134,12 @@ export class WeatherComponent implements OnDestroy {
     
     this.currentTheme = themeClass;
     this.renderer.addClass(this.document.body, this.currentTheme);
-    
-    // Set background image based on weather category and time of day
-    let bgImage = 'frog_sunny.png';
-    
-    if (category === 'clear') {
-      bgImage = isDay ? 'frog_sunny.png' : 'frog_night.png';
-    } else if (category === 'cloudy') {
-      bgImage = isDay ? 'frog_cloudy_day.png' : 'frog_cloudy_night.png';
-    } else if (category === 'rain') {
-      bgImage = isDay ? 'frog_rain.png' : 'frog_rainy_night.png';
-    } else if (category === 'storm') {
-      bgImage = 'frog_storm.png';
-    } else if (category === 'snow') {
-      bgImage = 'frog_snow.png';
-    } else if (category === 'fog') {
-      bgImage = 'frog_fog.png';
-    } else {
-      bgImage = isDay ? 'frog_sunny.png' : 'frog_night.png';
-    }
-    
-    this.renderer.setStyle(this.document.body, 'background-image', `url('images/${bgImage}')`);
-    this.renderer.setStyle(this.document.body, 'background-size', 'cover');
-    this.renderer.setStyle(this.document.body, 'background-position', 'center');
-    this.renderer.setStyle(this.document.body, 'background-attachment', 'fixed');
   }
 
   ngOnDestroy() {
     if (this.currentTheme) {
       this.renderer.removeClass(this.document.body, this.currentTheme);
     }
-    this.renderer.removeStyle(this.document.body, 'background-image');
-    this.renderer.removeStyle(this.document.body, 'background-size');
-    this.renderer.removeStyle(this.document.body, 'background-position');
-    this.renderer.removeStyle(this.document.body, 'background-attachment');
   }
 }
+

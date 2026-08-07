@@ -1,122 +1,175 @@
 .daily-forecast {
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
   .section-title {
     font-size: 1.1rem;
+    font-weight: 700;
+    color: #FFF;
+    margin: 0;
+  }
+
+  .tap-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
     font-weight: 500;
-    margin-bottom: 16px;
-    opacity: 0.9;
   }
 }
 
 .daily-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+
   .day-wrapper {
     display: flex;
     flex-direction: column;
-    border-radius: 12px;
-    transition: background-color 0.2s ease;
-    
-    &.expanded {
-      background-color: rgba(255, 255, 255, 0.05);
-      margin: 4px -8px;
-      padding: 0 8px;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.25s ease;
+    overflow: hidden;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.18);
     }
-    
+
+    &.expanded {
+      background: rgba(15, 23, 42, 0.6);
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
     .day-item {
       display: grid;
-      grid-template-columns: 80px 40px 1fr;
+      grid-template-columns: 84px 62px 38px 1fr;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      padding: 14px 18px;
       cursor: pointer;
-      padding: 8px 0;
-      border-radius: 12px;
-      
-      &:hover {
-        opacity: 0.8;
-      }
-      
+      user-select: none;
+
       .day-name {
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 0.98rem;
+        font-weight: 600;
+        color: #FFF;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
-      
+
+      .pop-wrapper {
+        display: flex;
+        align-items: center;
+        min-height: 22px;
+
+        .pop-pill {
+          font-size: 0.72rem;
+          font-weight: 600;
+          color: #38BDF8;
+          background: rgba(56, 189, 248, 0.18);
+          padding: 2px 7px;
+          border-radius: var(--radius-full);
+          white-space: nowrap;
+        }
+      }
+
       .icon-wrapper {
         display: flex;
         justify-content: center;
+        align-items: center;
       }
-      
-      .temps {
+
+      .temps-bar-container {
         display: flex;
         align-items: center;
-        gap: 12px;
-        
-        .min {
-          font-size: 0.95rem;
-          opacity: 0.7;
-          width: 30px;
+        gap: 10px;
+
+        .min-temp {
+          font-size: 0.9rem;
+          font-weight: 500;
+          color: var(--text-secondary);
+          width: 28px;
           text-align: right;
         }
-        
-        .max {
+
+        .max-temp {
           font-size: 0.95rem;
-          font-weight: 500;
-          width: 30px;
+          font-weight: 700;
+          color: #FFF;
+          width: 28px;
+          text-align: left;
         }
-        
-        .temp-bar {
+
+        .bar-track {
           flex: 1;
-          height: 4px;
-          background: rgba(0, 0, 0, 0.1);
-          border-radius: 2px;
+          height: 6px;
+          background: rgba(255, 255, 255, 0.12);
+          border-radius: var(--radius-full);
           position: relative;
           overflow: hidden;
-          
+
           .bar-fill {
             position: absolute;
-            left: 20%;
-            right: 20%;
-            height: 100%;
-            background: linear-gradient(90deg, #5bb4ff, #ff9d5b);
-            border-radius: 2px;
+            top: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #38BDF8, #FACC15, #FF8F00);
+            border-radius: var(--radius-full);
+            transition: all 0.3s ease;
           }
         }
       }
     }
-    
+
     .hourly-details {
-      padding: 12px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      margin-top: 4px;
-      animation: expandDown 0.3s ease-out forwards;
-      
+      padding: 14px 18px 18px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.15);
+
       .hourly-scroll {
         display: flex;
         overflow-x: auto;
-        gap: 20px;
-        padding-bottom: 10px;
+        gap: 12px;
+        padding-bottom: 6px;
         -webkit-overflow-scrolling: touch;
-        
+
         &::-webkit-scrollbar {
           height: 4px;
         }
-        
+
         .hour-item {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 12px;
-          min-width: 50px;
-          
+          gap: 6px;
+          min-width: 56px;
+          padding: 8px;
+          border-radius: var(--radius-sm);
+          background: rgba(255, 255, 255, 0.05);
+
           .time {
-            font-size: 0.85rem;
-            opacity: 0.9;
-            white-space: nowrap;
-          }
-          
-          .temp {
-            font-size: 1rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
             font-weight: 500;
+          }
+
+          .temp {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #FFF;
+          }
+
+          .pop-sub {
+            font-size: 0.65rem;
+            color: #38BDF8;
+            font-weight: 600;
           }
         }
       }
@@ -124,19 +177,33 @@
   }
 }
 
-@keyframes expandDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
+@media (max-width: 600px) {
+  .daily-forecast {
+    padding: 18px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  .daily-list .day-wrapper .day-item {
+    grid-template-columns: 74px 58px 34px 1fr;
+    gap: 6px;
+    padding: 12px 10px;
+
+    .day-name {
+      font-size: 0.88rem;
+    }
+
+    .pop-wrapper .pop-pill {
+      font-size: 0.68rem;
+      padding: 2px 5px;
+    }
+
+    .temps-bar-container {
+      gap: 6px;
+
+      .min-temp, .max-temp {
+        width: 24px;
+        font-size: 0.85rem;
+      }
+    }
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .temp-bar {
-    background: rgba(255, 255, 255, 0.1) !important;
-  }
-}

@@ -6,6 +6,8 @@ import { GeocodingResult } from '../../../../core/models/geocoding.model';
 import { WeatherStore } from '../../../../core/state/weather.store';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError } from 'rxjs';
 
+import { LanguageService } from '../../../../core/services/language.service';
+
 @Component({
   selector: 'app-location-search',
   imports: [CommonModule, FormsModule],
@@ -14,9 +16,14 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap, of, catchError 
 })
 export class LocationSearchComponent {
   private geocodingService = inject(GeocodingService);
-  private store = inject(WeatherStore);
+  store = inject(WeatherStore);
+  langService = inject(LanguageService);
 
   @Input() mode: 'primary' | 'secondary' = 'primary';
+
+  get isEs(): boolean {
+    return this.langService.isEs();
+  }
 
   searchQuery = signal('');
   results = signal<GeocodingResult[]>([]);
@@ -27,7 +34,7 @@ export class LocationSearchComponent {
 
   constructor() {
     this.searchSubject.pipe(
-      debounceTime(400),
+      debounceTime(250),
       distinctUntilChanged(),
       switchMap(query => {
         if (!query.trim()) {
@@ -62,7 +69,31 @@ export class LocationSearchComponent {
     this.searchQuery.set('');
   }
 
+  isFav(loc: GeocodingResult): boolean {
+    return this.store.favorites().some(f => f.name.toLowerCase() === loc.name.toLowerCase());
+  }
+
+  toggleFav(loc: GeocodingResult, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.store.toggleFavorite(loc);
+  }
+
+  removeFav(loc: GeocodingResult, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.store.toggleFavorite(loc);
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
+    this.results.set([]);
+    this.isDropdownOpen.set(false);
+  }
+
   closeDropdown() {
     setTimeout(() => this.isDropdownOpen.set(false), 200);
   }
 }
+
+

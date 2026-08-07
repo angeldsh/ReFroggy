@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { HourlyWeather } from '../../../../core/models/weather.model';
 import { WeatherIconComponent } from '../../../../shared/components/weather-icon/weather-icon.component';
 import { WeatherCodeMapperService } from '../../../../core/services/weather-code-mapper.service';
+import { LanguageService } from '../../../../core/services/language.service';
 
 interface HourlyData {
   time: string;
   temp: number;
   icon: string;
+  pop: number;
+  isNow: boolean;
 }
 
 @Component({
@@ -18,10 +21,15 @@ interface HourlyData {
 })
 export class HourlyForecastComponent implements OnChanges {
   @Input({ required: true }) hourly!: HourlyWeather;
-  @Input() currentTime?: string; // e.g. "2026-05-31T21:30"
+  @Input() currentTime?: string;
   
   mapper = inject(WeatherCodeMapperService);
+  langService = inject(LanguageService);
   forecastData: HourlyData[] = [];
+
+  get isEs(): boolean {
+    return this.langService.isEs();
+  }
 
   ngOnChanges() {
     this.processData();
@@ -30,12 +38,10 @@ export class HourlyForecastComponent implements OnChanges {
   private processData() {
     if (!this.hourly) return;
     
-    // Use the location's current time if available, otherwise fallback to local browser time
     const currentLocTimeStr = this.currentTime || new Date().toISOString();
-    // Get the hour part (e.g. "2026-05-31T21")
     const currentHourPrefix = currentLocTimeStr.substring(0, 13);
+    const isEs = this.isEs;
     
-    // find index matching the current hour of the location
     let startIndex = 0;
     for (let i = 0; i < this.hourly.time.length; i++) {
       if (this.hourly.time[i].startsWith(currentHourPrefix) || this.hourly.time[i] > currentLocTimeStr) {
@@ -44,19 +50,23 @@ export class HourlyForecastComponent implements OnChanges {
       }
     }
     
-    // Get next 24 hours
     this.forecastData = [];
     for (let i = startIndex; i < Math.min(startIndex + 24, this.hourly.time.length); i++) {
       const date = new Date(this.hourly.time[i]);
       const hour = date.getHours();
-      const isDay = hour >= 6 && hour <= 19; // simplified day/night
+      const isDay = hour >= 6 && hour <= 19;
       const info = this.mapper.getWeatherInfo(this.hourly.weather_code[i], isDay);
+      const pop = this.hourly.precipitation_probability?.[i] ?? 0;
+      const isNow = i === startIndex;
       
       this.forecastData.push({
-        time: i === startIndex ? 'Ahora' : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        time: isNow ? (isEs ? 'Ahora' : 'Now') : date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         temp: Math.round(this.hourly.temperature_2m[i]),
-        icon: info.icon
+        icon: info.icon,
+        pop,
+        isNow
       });
     }
   }
 }
+

@@ -1,35 +1,86 @@
-<div class="current-weather-card glass-panel">
+<div class="current-weather-card glass-panel animate-slide-up">
   <div class="header">
-    <h1 class="location">{{ location?.name || 'Ubicación' }}</h1>
-    <span class="condition-desc">{{ condition?.description }}</span>
-    <span class="local-time">{{ localTimeFormated }}</span>
+    <div class="title-row">
+      <h1 class="location">{{ location?.name || (isEs ? 'Ubicación' : 'Location') }}</h1>
+      <button class="btn-fav" [class.is-fav]="store.isCurrentFavorite()" (click)="toggleFav()" [title]="store.isCurrentFavorite() ? (isEs ? 'Quitar de favoritos' : 'Remove from favorites') : (isEs ? 'Añadir a favoritos' : 'Add to favorites')">
+        <svg viewBox="0 0 24 24" [attr.fill]="store.isCurrentFavorite() ? '#FACC15' : 'none'" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <span>{{ store.isCurrentFavorite() ? (isEs ? 'Favorito' : 'Saved') : (isEs ? 'Guardar' : 'Save') }}</span>
+      </button>
+    </div>
+    
+    <div class="condition-badge-row">
+      <span class="condition-badge">{{ condition?.description }}</span>
+      <span class="time-badge">🕒 {{ localTimeFormated }}</span>
+    </div>
   </div>
 
   <div class="main-info">
-    <div class="temp-wrapper">
-      <span class="temperature">{{ weather.current.temperature_2m | number:'1.0-0' }}&deg;</span>
+    <div class="temp-container">
+      <span class="temperature">{{ weather.current.temperature_2m | number:'1.0-0' }}<span class="unit">&deg;C</span></span>
+      @if (maxTempToday !== null && minTempToday !== null) {
+        <div class="temp-range-badge">
+          <span class="high">Max {{ maxTempToday | number:'1.0-0' }}&deg;</span>
+          <span class="sep">•</span>
+          <span class="low">Min {{ minTempToday | number:'1.0-0' }}&deg;</span>
+        </div>
+      }
     </div>
-    <div class="icon-wrapper">
+    <div class="icon-container">
       <app-weather-icon [icon]="condition?.icon || 'unknown'" size="large"></app-weather-icon>
     </div>
   </div>
 
-  <div class="details-section">
-    <div class="detail-item">
-      <span class="label">Sensación</span>
-      <span class="value">{{ weather.current.apparent_temperature | number:'1.0-0' }}&deg;</span>
+  <div class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">🌡️</div>
+      <div class="metric-info">
+        <span class="label">{{ isEs ? 'Sensación' : 'Feels Like' }}</span>
+        <span class="value">{{ weather.current.apparent_temperature | number:'1.0-0' }}&deg;</span>
+      </div>
     </div>
-    <div class="detail-item">
-      <span class="label">Humedad</span>
-      <span class="value">{{ weather.current.relative_humidity_2m }}%</span>
+
+    <div class="metric-card">
+      <div class="metric-icon">💧</div>
+      <div class="metric-info">
+        <span class="label">{{ isEs ? 'Humedad' : 'Humidity' }}</span>
+        <span class="value">{{ weather.current.relative_humidity_2m }}%</span>
+      </div>
     </div>
-    <div class="detail-item">
-      <span class="label">Viento</span>
-      <span class="value">{{ weather.current.wind_speed_10m }} km/h</span>
+
+    <div class="metric-card">
+      <div class="metric-icon">💨</div>
+      <div class="metric-info">
+        <span class="label">{{ isEs ? 'Viento' : 'Wind' }} ({{ windCompass }})</span>
+        <span class="value">{{ weather.current.wind_speed_10m }} <small>km/h</small></span>
+      </div>
     </div>
-    <div class="detail-item">
-      <span class="label">Lluvia</span>
-      <span class="value">{{ weather.current.precipitation }} mm</span>
+
+    <div class="metric-card">
+      <div class="metric-icon">☀️</div>
+      <div class="metric-info">
+        <span class="label">{{ isEs ? 'Índice UV' : 'UV Index' }}</span>
+        <span class="value">{{ uvIndex }} <span class="uv-pill" [ngClass]="uvLevel.class">{{ uvLevel.text }}</span></span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">🌧️</div>
+      <div class="metric-info">
+        <span class="label">{{ isEs ? 'Precipitación' : 'Precipitation' }}</span>
+        <span class="value">{{ weather.current.precipitation }} <small>mm</small></span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">🌅</div>
+      <div class="metric-info">
+        <span class="label">{{ isEs ? 'Sol' : 'Sun' }}</span>
+        <span class="value sm">{{ sunrise }} / {{ sunset }}</span>
+      </div>
     </div>
   </div>
 </div>
+
+

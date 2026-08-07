@@ -1,11 +1,19 @@
-<div class="hourly-forecast glass-panel">
-  <h3 class="section-title">Previsión por horas</h3>
+<div class="hourly-forecast glass-panel animate-slide-up">
+  <div class="section-header">
+    <h3 class="section-title">{{ isEs ? 'Previsión por horas (24h)' : 'Hourly Forecast (24h)' }}</h3>
+    <span class="swipe-hint">{{ isEs ? 'desliza →' : 'swipe →' }}</span>
+  </div>
   <div class="hourly-scroll" (touchstart)="$event.stopPropagation()" (touchend)="$event.stopPropagation()">
     @for (item of forecastData; track item.time) {
-      <div class="hour-item">
+      <div class="hour-item" [class.is-now]="item.isNow">
         <span class="time">{{ item.time }}</span>
-        <app-weather-icon [icon]="item.icon" size="small"></app-weather-icon>
+        <div class="icon-wrapper">
+          <app-weather-icon [icon]="item.icon" size="small"></app-weather-icon>
+        </div>
         <span class="temp">{{ item.temp }}&deg;</span>
+        @if (item.pop > 10) {
+          <span class="pop-badge" [title]="(isEs ? 'Probabilidad de lluvia: ' : 'Rain chance: ') + item.pop + '%'">💧 {{ item.pop }}%</span>
+        }
       </div>
     }
   </div>
